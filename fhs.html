@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fastServicehub - Premium Home Services in Jaipur</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c7d2fe;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4f46e5;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white border-b border-slate-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-8">
+                <a href="#" onclick="switchTab('home')" class="flex items-center space-x-2">
+                    <span
+                        class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-lg font-black tracking-wider uppercase">FSH</span>
+                    <span class="text-xl font-extrabold tracking-tight hidden sm:block">fast<span
+                            class="text-indigo-600">Servicehub</span></span>
+                </a>
+
+                <!-- Location Selector -->
+                <div class="relative hidden md:flex items-center space-x-1.5 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg hover:border-indigo-400 cursor-pointer transition"
+                    onclick="toggleLocationModal()">
+                    <i class="fa-solid fa-location-dot text-indigo-600"></i>
+                    <span id="current-location" class="text-sm font-medium">Malviya Nagar, Jaipur</span>
+                    <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+                </div>
+            </div>
+
+            <!-- Global Search (Desktop) -->
+            <div class="hidden lg:block flex-1 max-w-md mx-8 relative">
+                <div class="relative">
+                    <i
+                        class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="desktop-search-input" oninput="handleSearch(this.value)"
+                        placeholder="Search fastServicehub salon, deep cleaning, AC repair..."
+                        class="w-full bg-slate-50 border border-slate-200 pl-10 pr-4 py-2 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition">
+                </div>
+                <!-- Search Results Dropdown -->
+                <div id="search-dropdown"
+                    class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-100 max-h-80 overflow-y-auto z-50">
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="flex items-center space-x-4 sm:space-x-6">
+                <button onclick="switchTab('home')"
+                    class="nav-link text-indigo-600 font-semibold text-sm transition">Home</button>
+                <button onclick="switchTab('bookings')"
+                    class="nav-link text-slate-500 hover:text-slate-800 font-medium text-sm transition relative">
+                    My Bookings
+                    <span id="booking-badge"
+                        class="hidden absolute -top-2 -right-3 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
+                </button>
+                <button onclick="openPartnerModal()"
+                    class="text-slate-500 hover:text-slate-800 font-medium text-sm transition hidden sm:inline-block">Join
+                    fastServicehub Crew</button>
+                <button onclick="switchTab('help')"
+                    class="text-slate-500 hover:text-slate-800 font-medium text-sm transition"><i
+                        class="fa-regular fa-circle-question text-lg sm:hidden"></i><span
+                        class="hidden sm:inline">Support</span></button>
+
+                <!-- Dynamic Cart Trigger -->
+                <button onclick="toggleCartDrawer()"
+                    class="relative bg-slate-900 text-white hover:bg-indigo-600 px-4 py-2 rounded-xl text-sm font-semibold flex items-center space-x-2 transition shadow-sm">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="hidden sm:inline">Cart</span>
+                    <span id="cart-counter"
+                        class="bg-indigo-50 text-white text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Search & Location Sub-bar -->
+    <div class="bg-white border-b border-slate-100 p-4 md:hidden flex flex-col space-y-3 shadow-sm">
+        <div class="flex items-center justify-between" onclick="toggleLocationModal()">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-location-dot text-indigo-600"></i>
+                <span id="mobile-current-location" class="text-sm font-semibold text-slate-800">Malviya Nagar,
+                    Jaipur</span>
+            </div>
+            <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+        </div>
+        <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" id="mobile-search-input" oninput="handleSearch(this.value)"
+                placeholder="Search fastServicehub curated services..."
+                class="w-full bg-slate-50 border border-slate-200 pl-10 pr-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition">
+            <div id="mobile-search-dropdown"
+                class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-100 max-h-80 overflow-y-auto z-50">
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN VIEWPORT -->
+    <main class="flex-1">
+
+        <!-- ================= HOME TAB ================= -->
+        <section id="tab-home" class="tab-content block">
+
+            <!-- Hero / Promotion Header -->
+            <div
+                class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white py-12 md:py-20 relative overflow-hidden">
+                <!-- Decorative Elements -->
+                <div
+                    class="absolute inset-0 opacity-10 bg-[radial-gradient(#4f46e5_1px,transparent_1px)] [background-size:16px_16px]">
+                </div>
+                <div class="absolute -top-40 -right-40 w-96 h-96 bg-indigo-600 rounded-full blur-[120px] opacity-25">
+                </div>
+                <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-500 rounded-full blur-[120px] opacity-25">
+                </div>
+
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                    <span
+                        class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider inline-block mb-4">🏆
+                        Certified fastServicehub Quality Standard</span>
+                    <h1
+                        class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 max-w-4xl mx-auto leading-tight">
+                        Expert home services, <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-indigo-300">delivered
+                            lightning fast.</span>
+                    </h1>
+                    <p class="text-slate-300 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 font-light">
+                        Book premium salon, professional deep cleaning, AC repair, and electrical maintenance. Every
+                        single job is audited, approved, and personally backed by the trusted fastServicehub guarantee.
+                    </p>
+
+                    <!-- Quick Categories Badges -->
+                    <div class="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
+                        <button onclick="filterCategory('salon-women')"
+                            class="bg-white/10 hover:bg-white/20 border border-white/15 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition flex items-center space-x-2">
+                            <span>💅 Beauty Salon</span>
+                        </button>
+                        <button onclick="filterCategory('cleaning')"
+                            class="bg-white/10 hover:bg-white/20 border border-white/15 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition flex items-center space-x-2">
+                            <span>🧹 Deep Cleaning</span>
+                        </button>
+                        <button onclick="filterCategory('appliance')"
+                            class="bg-white/10 hover:bg-white/20 border border-white/15 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition flex items-center space-x-2">
+                            <span>🛠️ AC & Appliance Repair</span>
+                        </button>
+                        <button onclick="filterCategory('salon-men')"
+                            class="bg-white/10 hover:bg-white/20 border border-white/15 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition flex items-center space-x-2">
+                            <span>💈 Men's Grooming</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Grid of Interactive Categories -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="text-center md:text-left mb-8">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Experience our Golden
+                        Service Standard</h2>
+                    <p class="text-slate-500 mt-1">Select from our verified collection of expert home solutions</p>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
+                    <!-- Category Card 1 -->
+                    <div onclick="filterCategory('salon-women')"
+                        class="group bg-white border border-slate-100 hover:border-indigo-400 p-6 rounded-2xl shadow-sm hover:shadow-md transition duration-300 cursor-pointer text-center flex flex-col items-center">
+                        <div
+                            class="w-14 h-14 bg-pink-50 text-pink-500 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition duration-300">
+                            💅
+                        </div>
+                        <h3 class="mt-4 text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition">Women's
+                            Salon</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">Facials, Waxing & Makeup</p>
+                    </div>
+
+                    <!-- Category Card 2 -->
+                    <div onclick="filterCategory('salon-men')"
+                        class="group bg-white border border-slate-100 hover:border-indigo-400 p-6 rounded-2xl shadow-sm hover:shadow-md transition duration-300 cursor-pointer text-center flex flex-col items-center">
+                        <div
+                            class="w-14 h-14 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition duration-300">
+                            💈
+                        </div>
+                        <h3 class="mt-4 text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition">Men's
+                            Salon</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">Grooming & Beard Styling</p>
+                    </div>
+
+                    <!-- Category Card 3 -->
+                    <div onclick="filterCategory('appliance')"
+                        class="group bg-white border border-slate-100 hover:border-indigo-400 p-6 rounded-2xl shadow-sm hover:shadow-md transition duration-300 cursor-pointer text-center flex flex-col items-center">
+                        <div
+                            class="w-14 h-14 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition duration-300">
+                            ❄️
+                        </div>
+                        <h3 class="mt-4 text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition">AC &
+                            Appliance</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">Fast Cooling Gas Refill</p>
+                    </div>
+
+                    <!-- Category Card 4 -->
+                    <div onclick="filterCategory('cleaning')"
+                        class="group bg-white border border-slate-100 hover:border-indigo-400 p-6 rounded-2xl shadow-sm hover:shadow-md transition duration-300 cursor-pointer text-center flex flex-col items-center">
+                        <div
+                            class="w-14 h-14 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition duration-300">
+                            🧹
+                        </div>
+                        <h3 class="mt-4 text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition">Deep
+                            Cleaning</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">Express House Clean & Sweep</p>
+                    </div>
+
+                    <!-- Category Card 5 -->
+                    <div onclick="filterCategory('plumbing')"
+                        class="group bg-white border border-slate-100 hover:border-indigo-400 p-6 rounded-2xl shadow-sm hover:shadow-md transition duration-300 cursor-pointer text-center flex flex-col items-center">
+                        <div
+                            class="w-14 h-14 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition duration-300">
+                            🔧
+                        </div>
+                        <h3 class="mt-4 text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition">
+                            Plumbing & Electric</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">Instant Leakage & Wire Fixes</p>
+                    </div>
+
+                    <!-- Category Card 6 -->
+                    <div onclick="filterCategory('painting')"
+                        class="group bg-white border border-slate-100 hover:border-indigo-400 p-6 rounded-2xl shadow-sm hover:shadow-md transition duration-300 cursor-pointer text-center flex flex-col items-center">
+                        <div
+                            class="w-14 h-14 bg-purple-50 text-purple-500 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition duration-300">
+                            🎨
+                        </div>
+                        <h3 class="mt-4 text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition">
+                            Painting & Decor</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">Royal Wall Emulsion Coats</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Promotional Banner Grid -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Banner 1 -->
+                    <div
+                        class="bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-2xl p-6 text-white relative overflow-hidden shadow-lg shadow-indigo-100">
+                        <span
+                            class="bg-white/20 text-white border border-white/20 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">FAST
+                            PRIVILEGE</span>
+                        <h4 class="text-xl font-bold mt-3 max-w-[200px]">Flat ₹150 Off AC Super-Service</h4>
+                        <p class="text-indigo-100 text-xs mt-1">Use code: <span
+                                class="font-bold text-white bg-indigo-500 px-1.5 py-0.5 rounded">FASTSERVICE150</span>
+                        </p>
+                        <button onclick="filterCategory('appliance')"
+                            class="mt-4 bg-white text-indigo-700 hover:bg-slate-100 px-4 py-1.5 rounded-xl text-xs font-bold transition">Book
+                            Now</button>
+                        <span class="absolute right-4 bottom-4 text-5xl opacity-20">❄️</span>
+                    </div>
+
+                    <!-- Banner 2 -->
+                    <div
+                        class="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 text-white relative overflow-hidden shadow-lg shadow-emerald-100">
+                        <span
+                            class="bg-white/20 text-white border border-white/20 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">5-STAR
+                            CLEANING</span>
+                        <h4 class="text-xl font-bold mt-3 max-w-[200px]">Express Sweep & Clean Setup</h4>
+                        <p class="text-emerald-100 text-xs mt-1">100% dust-free home guarantee</p>
+                        <button onclick="filterCategory('cleaning')"
+                            class="mt-4 bg-white text-emerald-700 hover:bg-slate-100 px-4 py-1.5 rounded-xl text-xs font-bold transition">Book
+                            Now</button>
+                        <span class="absolute right-4 bottom-4 text-5xl opacity-20">🧹</span>
+                    </div>
+
+                    <!-- Banner 3 -->
+                    <div
+                        class="bg-gradient-to-r from-rose-600 to-pink-700 rounded-2xl p-6 text-white relative overflow-hidden shadow-lg shadow-pink-100">
+                        <span
+                            class="bg-white/20 text-white border border-white/20 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">PREMIUM
+                            GLOW</span>
+                        <h4 class="text-xl font-bold mt-3 max-w-[200px]">Premium Hair Root Touch-up</h4>
+                        <p class="text-rose-100 text-xs mt-1">Perfect gray scalp coverage with safe organic colors</p>
+                        <button onclick="filterCategory('salon-women')"
+                            class="mt-4 bg-white text-rose-700 hover:bg-slate-100 px-4 py-1.5 rounded-xl text-xs font-bold transition">Book
+                            Now</button>
+                        <span class="absolute right-4 bottom-4 text-5xl opacity-20">💇‍♀️</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trust/Guarantee Section -->
+            <div class="bg-white border-y border-slate-100 py-12">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                        <div class="flex items-start space-x-4">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl flex-shrink-0">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">100% Fully Verified Experts</h4>
+                                <p class="text-xs text-slate-500 mt-1">Every professional undergoes rigorous background
+                                    checks and 30-day simulated practical testing before joining fastServicehub.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl flex-shrink-0">
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">4.9+ Rated Professionals</h4>
+                                <p class="text-xs text-slate-500 mt-1">Only active specialists maintaining high rating
+                                    scales are dispatchable on active orders.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl flex-shrink-0">
+                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Transparent Pricing</h4>
+                                <p class="text-xs text-slate-500 mt-1">Honest quotes, flat upfront labor fees. Zero
+                                    hidden charges, completely honest billing guidelines.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl flex-shrink-0">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Free Rescheduling</h4>
+                                <p class="text-xs text-slate-500 mt-1">Easily modify dates, shift slots, or retract
+                                    appointments with our instant cancellation protocol.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client Reviews Section -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="text-center max-w-xl mx-auto mb-10">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Vouched by the
+                        Neighborhood</h2>
+                    <p class="text-slate-500 mt-1">Read reviews of how fastServicehub delivers high performance inside
+                        Jaipur</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="reviews-container">
+                    <!-- Loaded dynamically via JS for interaction/rating updates -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= DYNAMIC SERVICES CATALOG VIEW ================= -->
+        <section id="tab-services" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex items-center space-x-2 text-sm text-slate-500 mb-6">
+                <button onclick="switchTab('home')" class="hover:text-indigo-600">Home</button>
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+                <span id="breadcrumb-category" class="font-semibold text-slate-800">Women's Salon</span>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Left Sticky Sidebar Subcategories -->
+                <div class="w-full lg:w-64 flex-shrink-0">
+                    <div class="sticky top-24 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                        <h3 class="font-bold text-lg text-slate-800 mb-4 pb-2 border-b border-slate-100">Subcategories
+                        </h3>
+                        <div class="space-y-1" id="subcategories-sidebar">
+                            <!-- Populated Dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Service List Grid -->
+                <div class="flex-1">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 id="category-title" class="text-2xl font-black text-slate-900">fastServicehub Salon Services
+                        </h2>
+                        <span id="service-count"
+                            class="text-xs bg-indigo-50 text-indigo-600 border border-indigo-100 px-2.5 py-1 rounded-full font-semibold">12
+                            Services Available</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="services-grid">
+                        <!-- Dynamic Service Cards -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= BOOKINGS TAB ================= -->
+        <section id="tab-bookings" class="tab-content hidden max-w-4xl mx-auto px-4 py-12">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Your fastServicehub Bookings</h2>
+                    <p class="text-slate-500 mt-1">Manage and track your home appointments booked with fastServicehub
+                        and crew</p>
+                </div>
+                <button onclick="clearAllBookings()"
+                    class="text-xs text-red-500 hover:text-red-700 font-medium bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition">Clear
+                    All History</button>
+            </div>
+
+            <div id="bookings-list-container" class="space-y-6">
+                <!-- Dynamic Booking Cards (State Loaded) -->
+            </div>
+        </section>
+
+        <!-- ================= HELP & CHAT TAB ================= -->
+        <section id="tab-help" class="tab-content hidden max-w-5xl mx-auto px-4 py-12">
+            <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight text-center mb-8">How can fastServicehub
+                help you today?</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- FAQs List -->
+                <div class="md:col-span-2 space-y-4">
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Frequently Asked Questions</h3>
+
+                    <div class="bg-white border border-slate-100 rounded-xl p-4 shadow-sm cursor-pointer transition hover:border-indigo-300"
+                        onclick="toggleFAQ(1)">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold text-sm">How does fastServicehub verify service
+                                professionals?</span>
+                            <i id="faq-icon-1" class="fa-solid fa-plus text-xs text-slate-400"></i>
+                        </div>
+                        <div id="faq-ans-1" class="hidden text-xs text-slate-500 mt-2 leading-relaxed">
+                            Every specialist undergoes identity verification, background checks, and practical skills
+                            assessments before being certified as a fastServicehub expert.
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-100 rounded-xl p-4 shadow-sm cursor-pointer transition hover:border-indigo-300"
+                        onclick="toggleFAQ(2)">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold text-sm">What is the "fastServicehub Safety Protection
+                                Plan"?</span>
+                            <i id="faq-icon-2" class="fa-solid fa-plus text-xs text-slate-400"></i>
+                        </div>
+                        <div id="faq-ans-2" class="hidden text-xs text-slate-500 mt-2 leading-relaxed">
+                            fastServicehub provides property damage protection support up to ₹10,000 for any certified
+                            operations carried out at domestic premises. Your peace of mind is guaranteed!
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-100 rounded-xl p-4 shadow-sm cursor-pointer transition hover:border-indigo-300"
+                        onclick="toggleFAQ(3)">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold text-sm">How quickly can I reschedule or cancel a booking?</span>
+                            <i id="faq-icon-3" class="fa-solid fa-plus text-xs text-slate-400"></i>
+                        </div>
+                        <div id="faq-ans-3" class="hidden text-xs text-slate-500 mt-2 leading-relaxed">
+                            You can easily reschedule or cancel your appointment free of charge up to 3 hours prior to
+                            your booked slot via your booking panel.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Chat Simulation Panel -->
+                <div class="bg-slate-900 rounded-2xl p-6 text-white shadow-xl flex flex-col h-[400px]">
+                    <div class="flex items-center space-x-3 pb-4 border-b border-slate-800">
+                        <div
+                            class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-lg font-bold">
+                            FS</div>
+                        <div>
+                            <h4 class="font-bold text-sm">fastServicehub AI Support</h4>
+                            <span class="text-[10px] text-emerald-400 flex items-center"><span
+                                    class="w-1.5 h-1.5 bg-emerald-400 rounded-full inline-block mr-1"></span> Live
+                                Assistant</span>
+                        </div>
+                    </div>
+
+                    <!-- Chat Message Area -->
+                    <div id="chat-messages"
+                        class="flex-1 overflow-y-auto py-4 space-y-3 flex flex-col text-xs scrollbar">
+                        <div
+                            class="bg-slate-800 p-2.5 rounded-r-xl rounded-bl-xl max-w-[85%] self-start text-slate-200">
+                            Hello! I am your fastServicehub virtual assistant. Ask me about custom discounts,
+                            scheduling, services, or how to register as a service partner!
+                        </div>
+                    </div>
+
+                    <!-- Input Box -->
+                    <div class="mt-4 flex items-center space-x-2">
+                        <input type="text" id="chat-input" onkeydown="if(event.key === 'Enter') sendSupportMessage()"
+                            placeholder="Ask fastServicehub something..."
+                            class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        <button onclick="sendSupportMessage()"
+                            class="bg-indigo-600 hover:bg-indigo-500 w-8 h-8 rounded-xl flex items-center justify-center transition"><i
+                                class="fa-solid fa-paper-plane text-xs"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- STICKY BOTTOM CART BAR (Active when items added) -->
+    <div id="sticky-cart-bar"
+        class="hidden fixed bottom-0 left-0 right-0 bg-indigo-600 text-white z-40 shadow-2xl border-t border-indigo-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="bg-white/20 p-2 rounded-lg"><i class="fa-solid fa-basket-shopping text-lg"></i></span>
+                <div>
+                    <p class="text-sm font-bold"><span id="sticky-item-count">0</span> Service Selected</p>
+                    <p class="text-xs text-indigo-200">Guaranteed quality of service by fastServicehub</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <p class="text-lg font-black" id="sticky-total">₹0</p>
+                <button onclick="toggleCartDrawer()"
+                    class="bg-white text-indigo-700 hover:bg-indigo-50 px-5 py-2 rounded-xl text-sm font-extrabold transition shadow-md shadow-indigo-900/40">View
+                    Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 pt-16 pb-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div class="space-y-4">
+                    <span
+                        class="bg-white text-black px-3 py-1 rounded-lg text-lg font-black tracking-wider uppercase">FSH</span>
+                    <p class="text-xs text-slate-400 mt-3 leading-relaxed">
+                        The ultimate booking portal by fastServicehub. Home cleaning, beauty salons, appliance repairs,
+                        and electrical plumbing done right.
+                    </p>
+                    <!-- Contact Details -->
+                    <div class="space-y-2 text-xs text-slate-300 pt-1">
+                        <p class="flex items-center space-x-2">
+                            <i class="fa-solid fa-envelope text-indigo-400"></i>
+                            <a href="mailto:mbbhati52@gmail.com"
+                                class="hover:text-white transition font-medium">mbbhati52@gmail.com</a>
+                        </p>
+                        <p class="flex items-center space-x-2">
+                            <i class="fa-solid fa-phone text-indigo-400"></i>
+                            <a href="tel:+919057471644" class="hover:text-white transition font-medium">+91 90574
+                                71644</a>
+                        </p>
+                    </div>
+                    <div class="flex space-x-4 pt-2">
+                        <a href="#" class="text-slate-400 hover:text-white transition"><i
+                                class="fa-brands fa-facebook"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-white transition"><i
+                                class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-white transition"><i
+                                class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-white transition"><i
+                                class="fa-brands fa-linkedin"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h5 class="text-white font-bold text-sm uppercase mb-4">Services</h5>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#" onclick="filterCategory('salon-women')"
+                                class="hover:text-white transition">Women's Salon & Spa</a></li>
+                        <li><a href="#" onclick="filterCategory('appliance')" class="hover:text-white transition">AC
+                                Foam Jet Service</a></li>
+                        <li><a href="#" onclick="filterCategory('cleaning')" class="hover:text-white transition">Full
+                                House Deep Cleaning</a></li>
+                        <li><a href="#" onclick="filterCategory('plumbing')"
+                                class="hover:text-white transition">Plumbing & Electrical Wiring</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="text-white font-bold text-sm uppercase mb-4">Our Platform</h5>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#" class="hover:text-white transition">About fastServicehub</a></li>
+                        <li><a href="#" class="hover:text-white transition">Careers</a></li>
+                        <li><a href="#" class="hover:text-white transition">Contact Office</a></li>
+                        <li><a href="#" onclick="openPartnerModal()" class="hover:text-white transition">Become a
+                                Partner</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="text-white font-bold text-sm uppercase mb-4">Location Coverage</h5>
+                    <p class="text-xs text-slate-400 leading-relaxed mb-3">Serving Malviya Nagar, Vaishali Nagar,
+                        C-Scheme, and all premier regions in Jaipur, Rajasthan under our quality guidelines.</p>
+                    <div class="border border-slate-800 rounded-xl p-3 flex items-center space-x-2">
+                        <i class="fa-solid fa-shield-heart text-indigo-500"></i>
+                        <span class="text-[10px] font-semibold text-slate-300 uppercase">Safety Assured</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs">
+                <p>&copy; 2026 fastServicehub. All Rights Reserved. Created under strict premium quality guidelines.</p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= MODALS & DRAWERS ================= -->
+
+    <!-- Cart Drawer (Slides from Right) -->
+    <div id="cart-drawer"
+        class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col border-l border-slate-100">
+        <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-basket-shopping text-indigo-600 text-lg"></i>
+                <h3 class="font-extrabold text-lg text-slate-800">Your Basket</h3>
+            </div>
+            <button onclick="toggleCartDrawer()"
+                class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition"><i
+                    class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Scrollable Selected Items Area -->
+        <div id="cart-items-container" class="flex-1 overflow-y-auto p-4 space-y-4">
+            <!-- Dynamic Cart Items loaded here -->
+        </div>
+
+        <!-- Coupon Code Area -->
+        <div class="p-4 bg-slate-50 border-t border-slate-100">
+            <div class="flex items-center space-x-2">
+                <input type="text" id="coupon-input" placeholder="Enter Coupon Code (e.g. FASTSERVICE150)"
+                    class="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 uppercase">
+                <button onclick="applyCoupon()"
+                    class="bg-slate-900 text-white hover:bg-indigo-600 px-4 py-2 rounded-lg text-xs font-bold transition">Apply</button>
+            </div>
+            <p id="coupon-message" class="hidden text-[11px] font-semibold mt-2 text-emerald-600"></p>
+        </div>
+
+        <!-- Billing Summary Area -->
+        <div class="p-4 border-t border-slate-100 space-y-2">
+            <div class="flex justify-between text-xs text-slate-500">
+                <span>Total Item Price</span>
+                <span id="bill-subtotal">₹0</span>
+            </div>
+            <div class="flex justify-between text-xs text-slate-500">
+                <span>Service Setup Fee</span>
+                <span>₹49</span>
+            </div>
+            <div class="flex justify-between text-xs text-slate-500">
+                <span>Savings Discount</span>
+                <span id="bill-discount" class="text-emerald-600">-₹0</span>
+            </div>
+            <div class="flex justify-between text-sm font-extrabold text-slate-800 pt-2 border-t border-slate-100">
+                <span>Grand Total to Pay</span>
+                <span id="bill-total">₹49</span>
+            </div>
+
+            <button onclick="openScheduleModal()"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3.5 rounded-xl mt-4 flex items-center justify-center space-x-2 shadow-lg shadow-indigo-100 transition">
+                <span>Proceed to Schedule Slot</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Scheduling Modal -->
+    <div id="schedule-modal"
+        class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                    <h3 class="font-extrabold text-lg text-slate-900">Select Date & Time Slot</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Pick when you want fastServicehub professionals to arrive
+                    </p>
+                </div>
+                <button onclick="closeScheduleModal()"
+                    class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                <!-- Date Selector Cards -->
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 mb-3">Choose Date</h4>
+                    <div class="grid grid-cols-4 gap-2.5" id="date-picker-grid">
+                        <!-- Loaded dynamically via JS -->
+                    </div>
+                </div>
+
+                <!-- Time Selector Slots -->
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 mb-3">Choose Start Time</h4>
+                    <div class="grid grid-cols-3 gap-2" id="time-picker-grid">
+                        <!-- Loaded dynamically via JS -->
+                    </div>
+                </div>
+
+                <!-- Personal Information Fields -->
+                <div class="border-t border-slate-100 pt-4 space-y-4">
+                    <h4 class="font-bold text-sm text-slate-800">Your Contact Details (आपकी जानकारी)</h4>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Contact Number Field -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Mobile Number /
+                                संपर्क नंबर</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-phone absolute left-3 top-3.5 text-slate-400 text-xs"></i>
+                                <input type="tel" id="booking-phone" placeholder="9876543210"
+                                    class="w-full bg-slate-50 border border-slate-200 pl-9 pr-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition">
+                            </div>
+                        </div>
+
+                        <!-- Email Field -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Email Address /
+                                ईमेल</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-envelope absolute left-3 top-3.5 text-slate-400 text-xs"></i>
+                                <input type="email" id="booking-email" placeholder="name@domain.com"
+                                    class="w-full bg-slate-50 border border-slate-200 pl-9 pr-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Input Area -->
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 mb-3">Provide Service Address / पता</h4>
+                    <div class="relative">
+                        <i class="fa-solid fa-house absolute left-3 top-3.5 text-slate-400"></i>
+                        <input type="text" id="address-input"
+                            placeholder="Apartment / Villa Number, Street, Sector Area"
+                            class="w-full bg-slate-50 border border-slate-200 pl-10 pr-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirm Booking Button -->
+            <div class="p-6 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+                <div>
+                    <span class="text-xs text-slate-400">Total payable amount</span>
+                    <p class="text-lg font-black text-slate-800" id="schedule-modal-total">₹0</p>
+                </div>
+                <button onclick="finalizeBooking()"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-6 py-3 rounded-xl flex items-center space-x-2 transition shadow-lg shadow-indigo-100">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Place Booking</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Partner Portal Modal -->
+    <div id="partner-modal"
+        class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                    <h3 class="font-extrabold text-lg text-slate-900">Become fastServicehub Crew Partner</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Start earning up to ₹50,000 every single month with us</p>
+                </div>
+                <button onclick="closePartnerModal()"
+                    class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Your Full Name</label>
+                    <input type="text" id="partner-name" placeholder="John Doe"
+                        class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Your Core Skill</label>
+                    <select id="partner-skill"
+                        class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        <option value="Salon & Grooming">Salon & Grooming Expert</option>
+                        <option value="AC & Appliance Service">AC & Appliance Technician</option>
+                        <option value="Home Painting & Decor">Professional Wall Painter</option>
+                        <option value="Plumber or Electrician">Electrician or Plumber</option>
+                        <option value="Full House Deep Cleaning">Deep Cleaning Specialist</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Mobile Number</label>
+                    <input type="tel" id="partner-phone" placeholder="+91 9999999999"
+                        class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                </div>
+                <button onclick="submitPartnerApplication()"
+                    class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-extrabold py-3.5 rounded-xl text-sm transition mt-2">Submit
+                    Application</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Location Modal -->
+    <div id="location-modal"
+        class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-extrabold text-base text-slate-900">Change Location</h3>
+                <button onclick="toggleLocationModal()"
+                    class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">Select your region to view precise pricing, discount offers, and
+                local expert availability</p>
+            <div class="space-y-2">
+                <button onclick="selectLocation('Malviya Nagar, Jaipur')"
+                    class="w-full text-left bg-slate-50 hover:bg-indigo-50 border border-slate-100 hover:border-indigo-200 px-4 py-3 rounded-xl text-sm font-semibold transition flex justify-between items-center">
+                    <span>Malviya Nagar, Jaipur</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                </button>
+                <button onclick="selectLocation('Vaishali Nagar, Jaipur')"
+                    class="w-full text-left bg-slate-50 hover:bg-indigo-50 border border-slate-100 hover:border-indigo-200 px-4 py-3 rounded-xl text-sm font-semibold transition flex justify-between items-center">
+                    <span>Vaishali Nagar, Jaipur</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                </button>
+                <button onclick="selectLocation('C-Scheme, Jaipur')"
+                    class="w-full text-left bg-slate-50 hover:bg-indigo-50 border border-slate-100 hover:border-indigo-200 px-4 py-3 rounded-xl text-sm font-semibold transition flex justify-between items-center">
+                    <span>C-Scheme, Jaipur</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Alert Toast Container -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2"></div>
+
+    <!-- JAVASCRIPT LOGIC AND CORE ENGINE -->
+    <script>
+        // ================= APPLICATION STATE =================
+        const SERVICES_DATA = {
+            "salon-women": {
+                title: "fastServicehub Women's Salon & Spa",
+                subcategories: ["Facials & Clean-up", "Waxing & Threading", "Manicure & Pedicure", "Hair styling"],
+                items: [
+                    { id: "sw1", subcategory: "Facials & Clean-up", name: "fastServicehub Skin Glow Facial", price: 1299, rating: 5.0, reviewsCount: "1.2k", duration: "60 mins", details: "Premium signature scrub, deep microdermabrasion, organic facial cream extract.", image: "💅" },
+                    { id: "sw2", subcategory: "Facials & Clean-up", name: "fastServicehub Detan Special", price: 699, rating: 4.9, reviewsCount: "940", duration: "40 mins", details: "Herbal rich active fruit pack, deep pore clarification and toning.", image: "✨" },
+                    { id: "sw3", subcategory: "Waxing & Threading", name: "Honey Wax Deluxe Arms & Legs", price: 499, rating: 4.9, reviewsCount: "3.2k", duration: "45 mins", details: "Painless honey wax strip, protective skin moisturizers.", image: "🍯" },
+                    { id: "sw4", subcategory: "Manicure & Pedicure", name: "Crystal Spa Feet Therapy", price: 899, rating: 4.8, reviewsCount: "812", duration: "50 mins", details: "Acupressure soak, foot scrub, deep skin massage.", image: "💆‍♀️" },
+                    { id: "sw5", subcategory: "Hair styling", name: "Premium Root Touch-up", price: 899, rating: 5.0, reviewsCount: "1.1k", duration: "45 mins", details: "Complete organic root gray cover, safe ammonia-free herbal colors.", image: "💇‍♀️" }
+                ]
+            },
+            "salon-men": {
+                title: "fastServicehub Men's Salon & Grooming",
+                subcategories: ["Haircut & Styling", "Shave & Beard", "Face Grooming"],
+                items: [
+                    { id: "sm1", subcategory: "Haircut & Styling", name: "fastServicehub Premium Haircut", price: 299, rating: 4.9, reviewsCount: "12k", duration: "30 mins", details: "Custom hair contouring, deep head massage and styling.", image: "💇‍♂️" },
+                    { id: "sm2", subcategory: "Shave & Beard", name: "Signature Beard Lineup & Trim", price: 149, rating: 4.9, reviewsCount: "6k", duration: "20 mins", details: "Warm oil lather massage, clean blade alignment.", image: "🪒" },
+                    { id: "sm3", subcategory: "Face Grooming", name: "Activated Charcoal Vacuum Facial", price: 449, rating: 4.8, reviewsCount: "3.2k", duration: "40 mins", details: "Steam treatment, blackhead extractions, and ice pore tightening.", image: "🖤" }
+                ]
+            },
+            "appliance": {
+                title: "fastServicehub AC & Appliance Repair",
+                subcategories: ["AC Service", "AC Repair", "Refrigerator Repair"],
+                items: [
+                    { id: "ac1", subcategory: "AC Service", name: "fastServicehub Foam Jet AC Cleaning", price: 549, rating: 5.0, reviewsCount: "21k", duration: "45 mins", details: "Deep power jet wash, filter disinfection, fan blower optimization.", image: "❄️" },
+                    { id: "ac2", subcategory: "AC Repair", name: "Absolute AC Gas Charging", price: 2199, rating: 4.9, reviewsCount: "8.4k", duration: "90 mins", details: "Nitrogen pressure check, leak repairs, and precise gas refills.", image: "🧴" },
+                    { id: "ac3", subcategory: "Refrigerator Repair", name: "Double Door Fridge System Repair", price: 399, rating: 4.8, reviewsCount: "2.1k", duration: "60 mins", details: "Diagnostic visit, wire, relay and compressor checks.", image: "🧊" }
+                ]
+            },
+            "cleaning": {
+                title: "fastServicehub Cleaning & Upkeep",
+                subcategories: ["House Cleaning", "Sofa & Carpet", "Pest Control"],
+                items: [
+                    { id: "cl1", subcategory: "House Cleaning", name: "fastServicehub Full House Deep Clean", price: 3499, rating: 4.9, reviewsCount: "14k", duration: "6 hrs", details: "Complete dusting, sanitizing of kitchens, window cleaning, bathroom scrub.", image: "🧹" },
+                    { id: "cl2", subcategory: "Sofa & Carpet", name: "Premium Sofa Shampoo Sanitization", price: 1199, rating: 4.9, reviewsCount: "5k", duration: "2 hrs", details: "Machine washing, deep sanitizing extraction.", image: "🛋️" },
+                    { id: "cl3", subcategory: "Pest Control", name: "Odorless Anti-Pest Protection", price: 849, rating: 4.8, reviewsCount: "4.3k", duration: "60 mins", details: "Eco-friendly, chemical-free pest spray and gel placement.", image: "🦟" },
+                    { id: "cl4", subcategory: "House Cleaning", name: "Express Sweep & Mop Daily Plan", price: 349, rating: 5.0, reviewsCount: "6.8k", duration: "45 mins", details: "Quick regular sweep, floor disinfection and mop service.", image: "🪣" }
+                ]
+            },
+            "plumbing": {
+                title: "fastServicehub Plumbing & Electric",
+                subcategories: ["Plumbing Repair", "Electric Repairs", "Fittings & Installs"],
+                items: [
+                    { id: "pl1", subcategory: "Plumbing Repair", name: "Premium Tap & Faucet Repair", price: 149, rating: 4.9, reviewsCount: "1.9k", duration: "30 mins", details: "Leak fix, replacement washer fitting.", image: "🔧" },
+                    { id: "pl2", subcategory: "Electric Repairs", name: "Ceiling Fan Regulator Installation", price: 119, rating: 4.9, reviewsCount: "4k", duration: "20 mins", details: "Circuit test, safe wire configuration.", image: "🔌" }
+                ]
+            },
+            "painting": {
+                title: "fastServicehub Painting & Decor",
+                subcategories: ["Wall Painting"],
+                items: [
+                    { id: "pt1", subcategory: "Wall Painting", name: "Royal Emulsion Single Accent Wall", price: 4999, rating: 5.0, reviewsCount: "512", duration: "1 day", details: "High premium finish paint, dual coating, protective sheet coverage.", image: "🎨" }
+                ]
+            }
+        };
+
+        const REVIEWS_DATA = [
+            { id: 1, name: "Sneha Sharma", rating: 5, category: "Salon Women", comment: "The root touch-up looks absolutely perfect! Extremely professional salon service at home.", date: "Just 2 days ago" },
+            { id: 2, name: "Aditya Verma", rating: 5, category: "AC Service", comment: "The technician arrived on-time for my AC Foam jet service. Unparalleled performance and zero cooling issues now.", date: "1 week ago" },
+            { id: 3, name: "Ramesh Choudhary", rating: 5, category: "House Cleaning", comment: "Tried their express sweep & mop plan. The house is completely sparkling. Highly recommended!", date: "Yesterday" }
+        ];
+
+        let cart = [];
+        let bookings = JSON.parse(localStorage.getItem('uc_bookings')) || [];
+        let currentTab = 'home';
+        let selectedCategoryKey = 'salon-women';
+        let appliedCouponCode = "";
+        let selectedScheduleDate = "";
+        let selectedScheduleTime = "";
+
+        window.onload = function () {
+            renderReviews();
+            updateCartUI();
+            updateBookingsBadge();
+            generateScheduleOptions();
+        }
+
+        // ================= NAVIGATION CONTROL =================
+        function switchTab(tabName) {
+            currentTab = tabName;
+            document.querySelectorAll('.tab-content').forEach(element => {
+                element.classList.add('hidden');
+            });
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+            // Reset navigation header styles
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-indigo-600', 'font-semibold');
+                link.classList.add('text-slate-500');
+            });
+
+            // Adjust navigation highlighting
+            const activeNav = Array.from(document.querySelectorAll('.nav-link')).find(el => el.innerText.toLowerCase().includes(tabName));
+            if (activeNav) {
+                activeNav.classList.remove('text-slate-500');
+                activeNav.classList.add('text-indigo-600', 'font-semibold');
+            }
+
+            if (tabName === 'bookings') {
+                renderBookings();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ================= REVIEWS AND FEEDBACK ENGINE =================
+        function renderReviews() {
+            const container = document.getElementById('reviews-container');
+            container.innerHTML = REVIEWS_DATA.map(rev => `
+                <div class="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-1 text-amber-500">
+                            ${Array.from({ length: rev.rating }).map(() => `<i class="fa-solid fa-star text-xs"></i>`).join('')}
+                        </div>
+                        <span class="text-[10px] bg-indigo-50 px-2 py-0.5 rounded text-indigo-600 uppercase font-bold">${rev.category}</span>
+                    </div>
+                    <p class="text-xs text-slate-600 italic leading-relaxed">"${rev.comment}"</p>
+                    <div class="flex justify-between items-center mt-4 pt-4 border-t border-slate-50">
+                        <span class="font-bold text-xs text-slate-800">${rev.name}</span>
+                        <span class="text-[10px] text-slate-400">${rev.date}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ================= DYNAMIC CATEGORIES DISPLAY =================
+        function filterCategory(categoryKey) {
+            selectedCategoryKey = categoryKey;
+            const categoryData = SERVICES_DATA[categoryKey];
+            if (!categoryData) return;
+
+            // Update Breadcrumbs
+            document.getElementById('breadcrumb-category').innerText = categoryData.title;
+            document.getElementById('category-title').innerText = categoryData.title;
+            document.getElementById('service-count').innerText = `${categoryData.items.length} fastServicehub Services Available`;
+
+            // Populate Subcategories Sidebar
+            const subSidebar = document.getElementById('subcategories-sidebar');
+            subSidebar.innerHTML = `
+                <button onclick="scrollToSub('all')" class="w-full text-left text-xs font-semibold px-3 py-2 rounded-lg text-indigo-600 bg-indigo-50/50 block transition">All Subcategories</button>
+                ${categoryData.subcategories.map(sub => `
+                    <button onclick="scrollToSub('${sub}')" class="w-full text-left text-xs text-slate-500 hover:text-indigo-600 hover:bg-slate-50 px-3 py-2 rounded-lg block transition font-medium">${sub}</button>
+                `).join('')}
+            `;
+
+            // Populate Services Grid
+            renderServicesGrid(categoryData.items);
+
+            switchTab('services');
+        }
+
+        function renderServicesGrid(items) {
+            const grid = document.getElementById('services-grid');
+            grid.innerHTML = items.map(item => {
+                const cartItem = cart.find(c => c.id === item.id);
+                const count = cartItem ? cartItem.qty : 0;
+
+                const buttonHTML = count > 0 ? `
+                    <div class="flex items-center space-x-3 bg-indigo-600 text-white rounded-xl px-3 py-1.5 shadow-sm">
+                        <button onclick="updateCartQty('${item.id}', -1)" class="hover:text-slate-200 font-black">-</button>
+                        <span class="font-bold text-xs">${count}</span>
+                        <button onclick="updateCartQty('${item.id}', 1)" class="hover:text-slate-200 font-black">+</button>
+                    </div>
+                ` : `
+                    <button onclick="addToCart('${item.id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold text-xs px-5 py-2 rounded-xl border border-indigo-100 hover:border-indigo-200 transition">Add</button>
+                `;
+
+                return `
+                    <div class="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition flex justify-between items-start space-x-4">
+                        <div class="flex-1 space-y-1.5">
+                            <span class="text-[9px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase font-bold tracking-wider">${item.subcategory}</span>
+                            <h3 class="font-extrabold text-sm text-slate-900">${item.name}</h3>
+                            <div class="flex items-center space-x-2 text-xs">
+                                <span class="text-indigo-600 font-bold">₹${item.price}</span>
+                                <span class="text-slate-300">|</span>
+                                <span class="text-slate-400 flex items-center"><i class="fa-regular fa-clock mr-1 text-[10px]"></i> ${item.duration}</span>
+                            </div>
+                            <div class="flex items-center text-[11px] text-amber-500 font-semibold space-x-1">
+                                <i class="fa-solid fa-star text-[10px]"></i>
+                                <span>${item.rating} (${item.reviewsCount} reviews)</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400 font-light mt-2 line-clamp-2">${item.details}</p>
+                        </div>
+                        <div class="flex flex-col items-center space-y-3">
+                            <span class="text-3xl p-3 bg-slate-50 rounded-2xl shadow-inner">${item.image}</span>
+                            ${buttonHTML}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function scrollToSub(subcategoryName) {
+            const categoryData = SERVICES_DATA[selectedCategoryKey];
+            if (subcategoryName === 'all') {
+                renderServicesGrid(categoryData.items);
+                return;
+            }
+            const filtered = categoryData.items.filter(item => item.subcategory === subcategoryName);
+            renderServicesGrid(filtered);
+        }
+
+        // ================= LIVE GLOBAL SEARCH SYSTEM =================
+        function handleSearch(query) {
+            const q = query.toLowerCase().trim();
+            const desktopDropdown = document.getElementById('search-dropdown');
+            const mobileDropdown = document.getElementById('mobile-search-dropdown');
+
+            // Combine desktop and mobile logic
+            const dropdown = window.innerWidth >= 1024 ? desktopDropdown : mobileDropdown;
+
+            if (!q) {
+                dropdown.classList.add('hidden');
+                return;
+            }
+
+            // Search through overall items
+            let matching = [];
+            Object.keys(SERVICES_DATA).forEach(catKey => {
+                const cat = SERVICES_DATA[catKey];
+                cat.items.forEach(item => {
+                    if (item.name.toLowerCase().includes(q) || item.subcategory.toLowerCase().includes(q)) {
+                        matching.push({ ...item, categoryKey: catKey });
+                    }
+                });
+            });
+
+            if (matching.length === 0) {
+                dropdown.innerHTML = `
+                    <div class="p-4 text-center text-xs text-slate-400 font-medium">No services match your criteria</div>
+                `;
+            } else {
+                dropdown.innerHTML = matching.map(item => `
+                    <div onclick="selectSearchItem('${item.categoryKey}')" class="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer flex justify-between items-center transition">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xl">${item.image}</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800">${item.name}</h4>
+                                <span class="text-[9px] text-slate-400 capitalize">${item.subcategory}</span>
+                            </div>
+                        </div>
+                        <span class="text-xs font-black text-indigo-600">₹${item.price}</span>
+                    </div>
+                `).join('');
+            }
+            dropdown.classList.remove('hidden');
+        }
+
+        function selectSearchItem(catKey) {
+            document.getElementById('search-dropdown').classList.add('hidden');
+            document.getElementById('mobile-search-dropdown').classList.add('hidden');
+            document.getElementById('desktop-search-input').value = "";
+            document.getElementById('mobile-search-input').value = "";
+            filterCategory(catKey);
+        }
+
+        // Close search list on clicking outside
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('#desktop-search-input') && !e.target.closest('#search-dropdown')) {
+                document.getElementById('search-dropdown').classList.add('hidden');
+            }
+            if (!e.target.closest('#mobile-search-input') && !e.target.closest('#mobile-search-dropdown')) {
+                document.getElementById('mobile-search-dropdown').classList.add('hidden');
+            }
+        });
+
+        // ================= CART OPERATIONS =================
+        function addToCart(id) {
+            let foundService = null;
+            Object.keys(SERVICES_DATA).forEach(cat => {
+                const matched = SERVICES_DATA[cat].items.find(i => i.id === id);
+                if (matched) foundService = matched;
+            });
+
+            if (!foundService) return;
+
+            const existing = cart.find(c => c.id === id);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...foundService, qty: 1 });
+            }
+
+            showToast(`"${foundService.name}" added to cart!`);
+            updateCartUI();
+
+            // Re-render catalog services grid to update button displays
+            filterCategory(selectedCategoryKey);
+        }
+
+        function updateCartQty(id, change) {
+            const index = cart.findIndex(c => c.id === id);
+            if (index !== -1) {
+                cart[index].qty += change;
+                if (cart[index].qty <= 0) {
+                    cart.splice(index, 1);
+                }
+            }
+            updateCartUI();
+            filterCategory(selectedCategoryKey);
+        }
+
+        function updateCartUI() {
+            const totalItems = cart.reduce((acc, curr) => acc + curr.qty, 0);
+            const subtotal = cart.reduce((acc, curr) => acc + (curr.qty * curr.price), 0);
+
+            // Apply Coupon logic
+            let discount = 0;
+            if (appliedCouponCode === "FASTSERVICE150" && subtotal >= 500) {
+                discount = 150;
+            }
+
+            const setupFee = totalItems > 0 ? 49 : 0;
+            const grandTotal = Math.max(0, subtotal + setupFee - discount);
+
+            // Update Counters/Texts
+            document.getElementById('cart-counter').innerText = totalItems;
+            document.getElementById('sticky-item-count').innerText = totalItems;
+            document.getElementById('sticky-total').innerText = `₹${grandTotal}`;
+
+            // Toggle Sticky Cart Bar visibility
+            const stickyBar = document.getElementById('sticky-cart-bar');
+            if (totalItems > 0) {
+                stickyBar.classList.remove('hidden');
+            } else {
+                stickyBar.classList.add('hidden');
+            }
+
+            // Load drawer contents
+            const itemsContainer = document.getElementById('cart-items-container');
+            if (cart.length === 0) {
+                itemsContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-16 text-center space-y-4">
+                        <span class="text-5xl">🛒</span>
+                        <h4 class="font-bold text-sm text-slate-800">Your basket is empty</h4>
+                        <p class="text-[11px] text-slate-400 max-w-[200px]">Add services to begin booking our certified professionals.</p>
+                    </div>
+                `;
+            } else {
+                itemsContainer.innerHTML = cart.map(item => `
+                    <div class="flex items-center justify-between border-b border-slate-50 pb-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-2xl">${item.image}</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800 max-w-[150px] truncate">${item.name}</h4>
+                                <span class="text-[10px] text-indigo-600 font-semibold">₹${item.price} each</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3 bg-slate-100 rounded-lg px-2.5 py-1">
+                            <button onclick="updateCartQty('${item.id}', -1)" class="text-xs font-extrabold hover:text-indigo-600">-</button>
+                            <span class="text-xs font-bold">${item.qty}</span>
+                            <button onclick="updateCartQty('${item.id}', 1)" class="text-xs font-extrabold hover:text-indigo-600">+</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Update drawer calculations
+            document.getElementById('bill-subtotal').innerText = `₹${subtotal}`;
+            document.getElementById('bill-discount').innerText = `-₹${discount}`;
+            document.getElementById('bill-total').innerText = `₹${grandTotal}`;
+            document.getElementById('schedule-modal-total').innerText = `₹${grandTotal}`;
+        }
+
+        function toggleCartDrawer() {
+            const drawer = document.getElementById('cart-drawer');
+            if (drawer.classList.contains('translate-x-full')) {
+                drawer.classList.remove('translate-x-full');
+            } else {
+                drawer.classList.add('translate-x-full');
+            }
+        }
+
+        function applyCoupon() {
+            const code = document.getElementById('coupon-input').value.toUpperCase().trim();
+            const msg = document.getElementById('coupon-message');
+            const subtotal = cart.reduce((acc, curr) => acc + (curr.qty * curr.price), 0);
+
+            if (code === "FASTSERVICE150") {
+                if (subtotal < 500) {
+                    msg.innerText = "Coupon applies only on minimum cart value of ₹500.";
+                    msg.classList.remove('hidden', 'text-emerald-600');
+                    msg.classList.add('text-red-500');
+                } else {
+                    appliedCouponCode = "FASTSERVICE150";
+                    msg.innerText = "FASTSERVICE150 applied! Saved ₹150 instantly.";
+                    msg.classList.remove('hidden', 'text-red-500');
+                    msg.classList.add('text-emerald-600');
+                    updateCartUI();
+                }
+            } else {
+                msg.innerText = "Invalid coupon code. Try FASTSERVICE150";
+                msg.classList.remove('hidden', 'text-emerald-600');
+                msg.classList.add('text-red-500');
+            }
+        }
+
+        // ================= LOCATION MANAGEMENT =================
+        function toggleLocationModal() {
+            const modal = document.getElementById('location-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        function selectLocation(locName) {
+            document.getElementById('current-location').innerText = locName;
+            document.getElementById('mobile-current-location').innerText = locName;
+            toggleLocationModal();
+            showToast(`Location shifted to ${locName}`);
+        }
+
+        // ================= INTERACTIVE SCHEDULER ENGINE =================
+        function generateScheduleOptions() {
+            const dateGrid = document.getElementById('date-picker-grid');
+            const timeGrid = document.getElementById('time-picker-grid');
+
+            const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            const dates = [];
+
+            // Generate next 4 calendar days dynamically
+            for (let i = 0; i < 4; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() + i);
+                dates.push({
+                    dayName: days[d.getDay()],
+                    dayNum: d.getDate(),
+                    fullDate: d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
+                });
+            }
+
+            dateGrid.innerHTML = dates.map((date, idx) => `
+                <div id="date-card-${idx}" onclick="selectDate('${date.fullDate}', ${idx})" class="border border-slate-200 hover:border-indigo-500 p-2.5 rounded-xl text-center cursor-pointer transition bg-white">
+                    <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">${date.dayName}</span>
+                    <span class="block text-base font-black text-slate-800 mt-1">${date.dayNum}</span>
+                </div>
+            `).join('');
+
+            const times = ["08:00 AM", "10:30 AM", "01:00 PM", "03:30 PM", "06:00 PM", "08:30 PM"];
+            timeGrid.innerHTML = times.map((time, idx) => `
+                <button id="time-slot-${idx}" onclick="selectTime('${time}', ${idx})" class="border border-slate-200 hover:border-indigo-500 py-2 rounded-xl text-xs font-semibold text-slate-700 transition hover:bg-slate-50 bg-white">
+                    ${time}
+                </button>
+            `).join('');
+        }
+
+        function selectDate(fullDate, idx) {
+            selectedScheduleDate = fullDate;
+            document.querySelectorAll('[id^="date-card-"]').forEach(card => {
+                card.classList.remove('border-indigo-600', 'bg-indigo-50/50');
+            });
+            document.getElementById(`date-card-${idx}`).classList.add('border-indigo-600', 'bg-indigo-50/50');
+        }
+
+        function selectTime(time, idx) {
+            selectedScheduleTime = time;
+            document.querySelectorAll('[id^="time-slot-"]').forEach(slot => {
+                slot.classList.remove('border-indigo-600', 'bg-indigo-50/50');
+            });
+            document.getElementById(`time-slot-${idx}`).classList.add('border-indigo-600', 'bg-indigo-50/50');
+        }
+
+        function openScheduleModal() {
+            if (cart.length === 0) {
+                showToast("Please add services to the cart before booking.", "error");
+                return;
+            }
+            toggleCartDrawer();
+            document.getElementById('schedule-modal').classList.remove('hidden');
+        }
+
+        function closeScheduleModal() {
+            document.getElementById('schedule-modal').classList.add('hidden');
+        }
+
+        // ================= BOOKING CONFIRMATION & PERSISTENCE =================
+        function finalizeBooking() {
+            const address = document.getElementById('address-input').value.trim();
+            const phone = document.getElementById('booking-phone').value.trim();
+            const email = document.getElementById('booking-email').value.trim();
+
+            if (!selectedScheduleDate || !selectedScheduleTime) {
+                showToast("Please pick both Date & Time slots.", "error");
+                return;
+            }
+            if (!phone || !email) {
+                showToast("Please fill in your Phone Number and Email Address.", "error");
+                return;
+            }
+            if (!address) {
+                showToast("Please specify the service address.", "error");
+                return;
+            }
+
+            const totalPayable = cart.reduce((acc, curr) => acc + (curr.qty * curr.price), 0);
+
+            // Create a randomized booking ID and assign fastServicehub Professional
+            const randomId = "FSB" + Math.floor(Math.random() * 900000 + 100000);
+            const professionalPool = [
+                "Rajesh Kumar (5-Star Elite Professional)",
+                "Amit Sharma (Premium Certified Tech)",
+                "Pooja Verma (Salon Expert Pro)"
+            ];
+            const assignedProfessional = professionalPool[Math.floor(Math.random() * professionalPool.length)];
+
+            const newBooking = {
+                bookingId: randomId,
+                date: selectedScheduleDate,
+                time: selectedScheduleTime,
+                phone: phone,
+                email: email,
+                address: address,
+                professional: assignedProfessional,
+                items: [...cart],
+                status: "Scheduled under fastServicehub Guarantee",
+                amount: totalPayable
+            };
+
+            bookings.push(newBooking);
+            localStorage.setItem('uc_bookings', JSON.stringify(bookings));
+
+            // Clear state and fields
+            cart = [];
+            appliedCouponCode = "";
+            selectedScheduleDate = "";
+            selectedScheduleTime = "";
+            document.getElementById('address-input').value = "";
+            document.getElementById('booking-phone').value = "";
+            document.getElementById('booking-email').value = "";
+
+            updateCartUI();
+            updateBookingsBadge();
+            closeScheduleModal();
+
+            // Open Success Toast
+            showToast("Success! Booked with fastServicehub quality assurance.", "success");
+            switchTab('bookings');
+        }
+
+        // ================= MY BOOKINGS PAGE DYNAMICS =================
+        function renderBookings() {
+            const listContainer = document.getElementById('bookings-list-container');
+            if (bookings.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="bg-white border border-slate-100 rounded-3xl p-12 text-center shadow-sm">
+                        <span class="text-6xl">🗓️</span>
+                        <h3 class="font-extrabold text-xl text-slate-800 mt-4">No active appointments yet</h3>
+                        <p class="text-sm text-slate-500 mt-1 max-w-sm mx-auto">Book certified cleaners, electricians or hair salon specialists under fastServicehub supervision.</p>
+                        <button onclick="switchTab('home')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs mt-6 transition shadow-md">Book Home Service</button>
+                    </div>
+                `;
+                return;
+            }
+
+            listContainer.innerHTML = bookings.map((b, idx) => `
+                <div class="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm hover:shadow-md transition">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-50 pb-4 mb-4">
+                        <div>
+                            <span class="text-[10px] bg-indigo-50 text-indigo-600 font-bold px-2 py-0.5 rounded tracking-wide uppercase">Booking ID: ${b.bookingId}</span>
+                            <div class="flex items-center space-x-2 mt-1.5">
+                                <i class="fa-regular fa-clock text-indigo-600 text-sm"></i>
+                                <span class="font-black text-sm text-slate-800">${b.date} at ${b.time}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2 mt-3 md:mt-0">
+                            <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                            <span class="text-xs font-bold text-slate-800">${b.status}</span>
+                        </div>
+                    </div>
+
+                    <!-- Items List -->
+                    <div class="space-y-2.5 mb-4">
+                        ${b.items.map(item => `
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-600 font-medium">${item.name} <strong class="text-slate-400">x${item.qty}</strong></span>
+                                <span class="font-bold text-slate-800">₹${item.price * item.qty}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Customer Contact and Address Details -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 bg-slate-50/50 p-3.5 rounded-2xl border border-slate-100 text-xs text-slate-600">
+                        <div>
+                            <p class="font-bold text-slate-700 mb-1">Customer Info / ग्राहक जानकारी:</p>
+                            <div class="flex items-center space-x-2 mt-1"><i class="fa-solid fa-phone text-indigo-500 text-[10px]"></i> <span>${b.phone || 'N/A'}</span></div>
+                            <div class="flex items-center space-x-2 mt-1"><i class="fa-solid fa-envelope text-indigo-500 text-[10px]"></i> <span>${b.email || 'N/A'}</span></div>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-700 mb-1">Service Address / पता:</p>
+                            <p class="mt-1 flex items-start space-x-1"><i class="fa-solid fa-location-dot text-indigo-500 text-[10px] mt-0.5"></i> <span class="leading-relaxed">${b.address}</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Expert Profile Assignment Info -->
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 font-black flex items-center justify-center text-sm">
+                                FS
+                            </div>
+                            <div>
+                                <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Assigned Expert</span>
+                                <h4 class="font-extrabold text-xs text-slate-800">${b.professional}</h4>
+                                <p class="text-[10px] text-emerald-500 font-semibold"><i class="fa-solid fa-star text-[9px]"></i> 5.0 Rated Expert</p>
+                            </div>
+                        </div>
+                        <button onclick="cancelBooking('${b.bookingId}')" class="text-xs text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition font-bold self-end sm:self-center">Cancel Booking</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function cancelBooking(bookingId) {
+            if (confirm("Are you sure you want to cancel your scheduled service?")) {
+                bookings = bookings.filter(b => b.bookingId !== bookingId);
+                localStorage.setItem('uc_bookings', JSON.stringify(bookings));
+                showToast("Booking successfully canceled.", "success");
+                renderBookings();
+                updateBookingsBadge();
+            }
+        }
+
+        function clearAllBookings() {
+            if (confirm("Are you sure you want to completely clear your booking history?")) {
+                bookings = [];
+                localStorage.removeItem('uc_bookings');
+                showToast("Cleared booking history.", "success");
+                renderBookings();
+                updateBookingsBadge();
+            }
+        }
+
+        function updateBookingsBadge() {
+            const count = bookings.length;
+            const badge = document.getElementById('booking-badge');
+            if (count > 0) {
+                badge.innerText = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // ================= PARTNER PORTAL FORM =================
+        function openPartnerModal() {
+            document.getElementById('partner-modal').classList.remove('hidden');
+        }
+
+        function closePartnerModal() {
+            document.getElementById('partner-modal').classList.add('hidden');
+        }
+
+        function submitPartnerApplication() {
+            const name = document.getElementById('partner-name').value.trim();
+            const phone = document.getElementById('partner-phone').value.trim();
+            const skill = document.getElementById('partner-skill').value;
+
+            if (!name || !phone) {
+                showToast("Please fill in all details.", "error");
+                return;
+            }
+
+            closePartnerModal();
+            showToast("Application submitted! Our recruitment team will reach out to you soon.", "success");
+
+            // reset form fields
+            document.getElementById('partner-name').value = "";
+            document.getElementById('partner-phone').value = "";
+        }
+
+        // ================= SUPPORT CHAT ENGINE =================
+        function sendSupportMessage() {
+            const input = document.getElementById('chat-input');
+            const container = document.getElementById('chat-messages');
+            const q = input.value.trim();
+
+            if (!q) return;
+
+            // Display user message
+            container.innerHTML += `
+                <div class="bg-indigo-600 p-2.5 rounded-l-xl rounded-br-xl max-w-[85%] self-end text-white">
+                    ${q}
+                </div>
+            `;
+            input.value = "";
+            container.scrollTop = container.scrollHeight;
+
+            // Generate support answers dynamically based on key phrases
+            setTimeout(() => {
+                let botAnswer = "Hello! I am your fastServicehub assistant. You can ask me about cancelation policies, coupon discount code 'FASTSERVICE150', or safety coverage.";
+                const text = q.toLowerCase();
+
+                if (text.includes('cancel') || text.includes('reschedule')) {
+                    botAnswer = "You can modify or cancel bookings easily under your 'My Bookings' tab up to 3 hours prior to your scheduled slots for free.";
+                } else if (text.includes('price') || text.includes('coupon') || text.includes('discount')) {
+                    botAnswer = "Get flat ₹150 off on eligible services! Simply enter FASTSERVICE150 code in your checkout basket.";
+                } else if (text.includes('guarantee') || text.includes('safe') || text.includes('damaged')) {
+                    botAnswer = "We take full property and safety accountability. If any unexpected issues occur, we provide damage resolution support up to ₹10,000.";
+                }
+
+                container.innerHTML += `
+                    <div class="bg-slate-800 p-2.5 rounded-r-xl rounded-bl-xl max-w-[85%] self-start text-slate-200">
+                        ${botAnswer}
+                    </div>
+                `;
+                container.scrollTop = container.scrollHeight;
+            }, 800);
+        }
+
+        function toggleFAQ(idx) {
+            const ans = document.getElementById(`faq-ans-${idx}`);
+            const icon = document.getElementById(`faq-icon-${idx}`);
+            if (ans.classList.contains('hidden')) {
+                ans.classList.remove('hidden');
+                icon.className = "fa-solid fa-minus text-xs text-indigo-500";
+            } else {
+                ans.classList.add('hidden');
+                icon.className = "fa-solid fa-plus text-xs text-slate-400";
+            }
+        }
+
+        // ================= DYNAMIC TOAST UTILITIES =================
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `flex items-center space-x-2.5 px-4 py-3 rounded-xl shadow-lg border text-xs font-semibold transform translate-y-2 opacity-0 transition-all duration-300 ${type === "success"
+                ? "bg-slate-900 border-slate-800 text-white"
+                : "bg-red-500 border-red-400 text-white"
+                }`;
+
+            toast.innerHTML = `
+                <i class="${type === "success" ? "fa-solid fa-circle-check text-emerald-400" : "fa-solid fa-circle-exclamation"}"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            // Animate transition show
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            // Dismiss automatically
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
